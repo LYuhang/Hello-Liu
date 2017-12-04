@@ -1,5 +1,6 @@
 #Git-notes-2
 [TOC]
+December 4, 2017 9:27 AM
 _ _ _
 ### 1.git commit -a
 **作用**：跳过使用暂存区域。在提交的时候自动把所有已经跟踪过的文件暂存起来一并提交，从而跳过git add操作。
@@ -106,3 +107,107 @@ $ git log --since=2.weeks
 ```
 $ git log --pretty="%h:%s" --author=gitster --since="2008-10-01" --before="2008-11-01" --no-merges -- t/
 ```
+### 5.gitk工具
+**用途**：gitk是一个可以查阅提交历史的可视化工具。上半个窗口显示历次提交的分支祖先图谱，下半个窗口显示当前选的对应的具体差异。
+如下图：
+![git界面](http://p08dasr0h.bkt.clouddn.com/17-12-4/7880567.jpg)
+
+### 6.git commit --amend
+**用途**：撤销刚才的提交操作，使用 **--amend** 选项进行重新提交。
+**用法**：
+如果提交说明写错了，刚才的提交没有做任何改动，那么可以直接运行`git commit --amend`命令，相当于重新写一遍提交说明。
+如果刚才提交时忘了暂存某些修改或者忘了暂存某个文件，可以补上暂存操作，然后再运行该命令。
+### 7.git reset HEAD < file >
+**用途**：取消文件的暂存。例如以下例子取消对readme.txt文件的暂存。
+```
+$ git reset HEAD readme.txt
+```
+### 8.git checkout
+**用途**：撤销对文件的更改。例如如下例子：
+```
+$ git checkout -- readme.txt
+```
+**注意**：该命令有危险，这条命令会用之前的版本来替换当前的文件，所以 ，当前的更改都被覆盖了，在运行该条命令前，**务必要确认真的不再需要之前的更改**。
+
+### 9.git remote
+**用途**：查看当前的远程仓库。origin为默认名。
+- git remote
+显示当前原始仓库的名称。
+- git remote -v
+显示当前的原始仓库以及对应的克隆地址。
+- git remote add [shortname] [url]
+该命令将相应的简短字串代替链接名称，比如如下例子中：
+```
+$ git remote add pb git://github/……
+```
+那么这个时候可以直接使用pb代替仓库地址了。
+
+### 10.git fetch [remote-name]
+**用途**：该命令会拉取远程仓库中本地仓库没有的数据到本地。比如如下例子：
+```
+$ git fetch origin
+```
+会拉取自上一次克隆或上一次fetch以来的更新到本地。
+**注意**：git fetch只将数据拉取到本地，而不会自动将数据合并到本地仓库，需要手工合并。
+
+### 11.git pull
+**用途**：自动将远程仓库的数据抓取下来并合并到本地的仓库。
+
+### 12.git push [remote-name] [branch-name]
+**用途**：将本地仓库的数据推送到远程仓库。例如将本地的master分支推送到origin服务器上：
+```
+$ git push origin master
+```
+**注意**：如果在推送数据的同时，别人也在推送数据，那么请求会被驳回，必须要先将别人的更新拉取到本地，然后才能够推送到远程仓库。
+### 13.git remote show [remote-name]
+**用途**：显示远程仓库的详细信息。
+**注释**：
+*Local branch pushed with 'git push'*：表示直接使用`git push`命令时缺省的推送方式。
+*New remote branch*：表示那些远程仓库还没有同步到本地。
+*Stale tracking branch*：表示同步到本地的哪些分支在远端已经被删除。
+
+### 14.git remote rename [old-name] [new-name]
+**用途**：将远程仓库进行重命名。例如如下例子，将pb改名为paul：
+```
+$ git remote rename pb paul
+```
+### 15.git remote rm [name]
+**用途**：将远端仓库移除。例如以下例子将远端仓库paul进行移除。
+```
+$ git remote rm paul
+```
+### 16.git tag
+- git tag
+直接显示现有的标签。
+- git tag -1 [tag-module]
+显示感兴趣的标签。例如如下例子：
+```
+$ git tag -1 'v1.4.2.*'
+```
+那么会列出所有以v1.4.2.开头的标签。
+- git tag -a [tag-name] -m [appended-notes]
+创建一个含附注的标签。例如如下例子：
+```
+$ git tag -a v1.4 -m 'my version 1.4'
+```
+其中-m指定了附注内容，如果没有-m，那么之后会启动编辑器供你输入。
+- git show [tag-name]
+显示相应标签的版本信息。
+- git tag -s [tag-name] -m [appended]
+使用GPG进行签署标签。
+- git tag [tag-name]
+直接添加轻量级的标签。
+- git tag -v [tag-name]
+验证标签。此命令会调用GPG来验证签名，所以需要签署者的公钥，才能验证。
+- git push [branch-name] [tag-name]
+由于默认情况下，标签不会随着git push被推送到远程仓库，所以需要通过显式命令。
+例如如下代码：
+```
+$ git push origin v1.0
+```
+如果想一次性将所有标签推送上去，那么可以使用 **--tags** 选项。
+```
+$ git push origin --tags
+```
+### Tips
+输入命令时，可以输入部分后连续按两次**Tab**键，那么会显示出可能给要输出的所有的命令。
